@@ -26,11 +26,9 @@ public class Panel extends JFrame{
 	JButton facile   = new JButton("Facile");
 	JButton moyen    = new JButton("Moyen");
 	JButton dur = new JButton("Dur");
+	JButton aiVSai = new JButton("AIVSAI");
 	
 	ButtonGroup bgroup = new ButtonGroup();
-	
-	
-	
 	JLabel red=new JLabel(redIcon);
 	JLabel blue=new JLabel(blueIcon);
 	JLabel yellow=new JLabel(yellowIcon);
@@ -50,6 +48,9 @@ public class Panel extends JFrame{
 	int xsCourant,ysCourant;
 	HashMap<String,String> Map=new HashMap<String, String>();
 	HashMap<String,JLabel> MapLabel=new HashMap<String, JLabel>();
+	
+	boolean isAiVSai=false;
+	
 	/*Constructeur*/
 	public Panel(){
 		this.setLayout(null);
@@ -60,6 +61,7 @@ public class Panel extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				AlphaBeta.seuil=1;
+				isAiVSai=false;
 			}
 		});
 		
@@ -70,6 +72,7 @@ public class Panel extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				AlphaBeta.seuil=2;
+				isAiVSai=false;
 			}
 		});
 		
@@ -79,6 +82,115 @@ public class Panel extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				AlphaBeta.seuil=3;
+				isAiVSai=false;
+			}
+		});
+		
+		aiVSai.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				isAiVSai=true;
+				
+				if(tourJoueur.equals("yellow")){
+					tourJoueur="green";
+					tourJoueurAdv="yellow";
+				}else{
+					tourJoueur="yellow";
+					tourJoueurAdv="green";
+				}
+				
+				IA ia=new IA(Panel.this);
+				
+				
+				ArrayList<String> iaResult = new ArrayList<String>();
+				iaResult=ia.IAAlphaBeta2(tourJoueurAdv);
+			
+				
+				System.out.println(iaResult);
+				String text=iaResult.get(0);
+				final int xtext=Integer.parseInt(text.substring(0, 2));
+				final int ytext=Integer.parseInt(text.substring(2, 4));
+				String xS=xtext>=0?"+"+xtext:""+xtext;
+				String yS=ytext>=0?"+"+ytext:""+ytext;
+				if(iaResult.get(1)=="0"){
+					MapLabel.get(""+xS+yS).setIcon(greyIcon);
+					String randomClone=iaResult.get(2);
+					final int rCx=Integer.parseInt(randomClone.substring(0, 2));
+					final int rCy=Integer.parseInt(randomClone.substring(2, 4));
+					TimerTask task = new TimerTask()
+					{
+						@Override
+						public void run() 
+						{
+							change(rCx,rCy,tourJoueurAdv);
+							if(getColor(rCx-1,rCy)==tourJoueur)
+								change(rCx-1,rCy,tourJoueurAdv);
+							if(getColor(rCx,rCy-1)==tourJoueur)
+								change(rCx,rCy-1,tourJoueurAdv);
+							if(getColor(rCx+1,rCy)==tourJoueur)
+								change(rCx+1,rCy,tourJoueurAdv);
+							if(getColor(rCx,rCy+1)==tourJoueur)
+								change(rCx,rCy+1,tourJoueurAdv);
+							if(getColor(rCx-1,rCy+1)==tourJoueur)
+								change(rCx-1,rCy+1,tourJoueurAdv);
+							if(getColor(rCx+1,rCy-1)==tourJoueur)
+								change(rCx+1,rCy-1,tourJoueurAdv);
+							if(AlphaBeta.actionList(Panel.this.Map, tourJoueurAdv).size()==0){
+								ArrayList<String> left=Panel.this.getColorPoints("purple");
+								for(int i=0;i<left.size();i++){
+									Panel.this.change(Integer.parseInt(left.get(i).substring(0,2)), Integer.parseInt(left.get(i).substring(2,4)), tourJoueur);
+								}
+							}
+							Panel.this.pointIA.setText("IA alpha beta:"+Panel.this.getColorPoints(tourJoueurAdv).size());
+							Panel.this.pointJoueur.setText("IA 2 :"+Panel.this.getColorPoints(tourJoueur).size());
+						}	
+					};
+					Timer timer = new Timer();
+					timer.schedule(task, 1000);
+				}
+				else if(iaResult.get(1)=="1"){
+					MapLabel.get(""+xS+yS).setIcon(greyIcon);
+					String randomJump=iaResult.get(2);
+					final int rJx=Integer.parseInt(randomJump.substring(0, 2));
+					final int rJy=Integer.parseInt(randomJump.substring(2, 4));
+					TimerTask task = new TimerTask()
+					{
+						@Override
+						public void run() 
+						{
+							change(rJx,rJy,tourJoueurAdv);
+							change(xtext,ytext,"purple");
+							if(getColor(rJx-1,rJy)==tourJoueur)
+								change(rJx-1,rJy,tourJoueurAdv);
+							if(getColor(rJx,rJy-1)==tourJoueur)
+								change(rJx,rJy-1,tourJoueurAdv);
+							if(getColor(rJx+1,rJy)==tourJoueur)
+								change(rJx+1,rJy,tourJoueurAdv);
+							if(getColor(rJx,rJy+1)==tourJoueur)
+								change(rJx,rJy+1,tourJoueurAdv);
+							if(getColor(rJx-1,rJy+1)==tourJoueur)
+								change(rJx-1,rJy+1,tourJoueurAdv);
+							if(getColor(rJx+1,rJy-1)==tourJoueur)
+								change(rJx+1,rJy-1,tourJoueurAdv);
+							if(AlphaBeta.actionList(Panel.this.Map, tourJoueurAdv).size()==0){
+								ArrayList<String> left=Panel.this.getColorPoints("purple");
+								for(int i=0;i<left.size();i++){
+									Panel.this.change(Integer.parseInt(left.get(i).substring(0,2)), Integer.parseInt(left.get(i).substring(2,4)), tourJoueur);
+								}
+							}
+							Panel.this.pointIA.setText("IA alpha beta:"+Panel.this.getColorPoints(tourJoueurAdv).size());
+							Panel.this.pointJoueur.setText("IA 2 :"+Panel.this.getColorPoints(tourJoueur).size());
+						}	
+					};
+					Timer timer = new Timer();
+					timer.schedule(task, 1000);
+				}
+
+			
+				
+				
+				
 			}
 		});
 		
@@ -123,6 +235,9 @@ public class Panel extends JFrame{
 				this.MapLabel.get(""+xS+yS).addMouseListener(new MouseAdapter(){
 					@Override
 					public void mouseClicked(MouseEvent e) {
+						
+						if(isAiVSai!=true){
+						
 						// TODO Auto-generated method stub
 						boolean aJoue=false;
 						int nbClick=0;
@@ -173,6 +288,7 @@ public class Panel extends JFrame{
 						if(tourJoueurAdv=="yellow"&&aJoue==true&&Map.containsValue("purple")==true){
 							IA ia=new IA(Panel.this);
 							ArrayList<String> iaResult=ia.IAAlphaBeta();
+							System.out.println(iaResult);
 							String text=iaResult.get(0);
 							final int xtext=Integer.parseInt(text.substring(0, 2));
 							final int ytext=Integer.parseInt(text.substring(2, 4));
@@ -253,6 +369,8 @@ public class Panel extends JFrame{
 							}
 							nbClick=2;
 							aJoue=false;
+							
+							
 						}
 						if(aJoue){
 							if(tourJoueur.equals("yellow")){
@@ -263,7 +381,14 @@ public class Panel extends JFrame{
 								tourJoueurAdv="green";
 							}
 						}
+						
+						
+						
+						
 					}
+					
+				}
+					
 				});
 			}
 		}
@@ -403,6 +528,9 @@ public class Panel extends JFrame{
 		
 		dur.setBounds(1000,200 , 80, 80);
 		this.add(dur);
+		
+		aiVSai.setBounds(1100,200 , 80, 80);
+		this.add(aiVSai);
 		
 		
 		change(-1,0,"black");

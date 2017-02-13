@@ -20,32 +20,28 @@ public class IA {
 
 	public ArrayList<String> IAAlphaBeta(){
 		ArrayList<String> choice= new ArrayList<String>();
-		
-		
-		Action a = AlphaBeta.alphaBetaDecision(mapSimulation, "yellow");
-
-		/***/
-		
-		
-		
+		Action a = AlphaBeta.alphaBetaDecision(mapSimulation);
 		String pion = a.getPosDepart();
 		String dest = a.getPosArrive();
 		String mode = a.getTypeDeplacement();
-		
-		/*
-		System.out.print(pion);
-		System.out.print(dest);
-		System.out.print(mode);
-		*/
-
 		choice.add(pion);	
 		choice.add(mode);
-		choice.add(dest);
-		
+		choice.add(dest);		
 		return choice;
-		
-
 	}
+	
+	public ArrayList<String> IAAlphaBeta2(String player){
+		ArrayList<String> choice= new ArrayList<String>();
+		Action a = AlphaBeta2.alphaBetaDecision(mapSimulation, player);
+		String pion = a.getPosDepart();
+		String dest = a.getPosArrive();
+		String mode = a.getTypeDeplacement();
+		choice.add(pion);	
+		choice.add(mode);
+		choice.add(dest);		
+		return choice;
+	}
+	
 
 	public static String getColor(HashMap<String,String> Simulation,int x,int y){
 		String xS=x>=0?"+"+x:""+x;
@@ -191,19 +187,8 @@ public class IA {
 		System.out.println("green : " +greenList.toString());
 		System.out.println("yellow : " +yellowList.toString());
 
-
-
-
-
 		return map;
 	}
-
-
-
-
-
-
-
 
 	public static HashMap<String,String> simulationRemplissageNoCopy(HashMap<String,String> Simulation,String pion, String Dest, String mode){
 
@@ -225,12 +210,8 @@ public class IA {
 		int ys=Integer.parseInt(Dest.substring(2,4));
 
 		if(mode=="1"){
-
 			change(Simulation,Integer.parseInt(pion.substring(0,2)),Integer.parseInt(pion.substring(2,4)),"purple");
-
 		}
-
-
 
 		change(Simulation,xs,ys,tourJoueur);
 
@@ -247,18 +228,9 @@ public class IA {
 			change(Simulation,xs-1,ys+1,tourJoueur);
 		if(getColor(Simulation,xs+1,ys-1)==tourJoueurAdv)
 			change(Simulation,xs+1,ys-1,tourJoueur);
-
-
-
-
 		return Simulation;
 
 	}
-
-
-
-
-
 
 	public static HashMap<String,String> simulationRemplissageCopy(HashMap<String,String> Simulation,String pion, String Dest, String mode){
 
@@ -308,9 +280,6 @@ public class IA {
 			change(sim,xs-1,ys+1,tourJoueur);
 		if(getColor(sim,xs+1,ys-1)==tourJoueurAdv)
 			change(sim,xs+1,ys-1,tourJoueur);
-
-
-
 
 		return sim;
 

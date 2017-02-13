@@ -4,10 +4,10 @@ import java.util.Iterator;
 
 
 /**Algorithme alpha-beta*/
-public class AlphaBeta {
+public class AlphaBeta2 {
 
 	public static ArrayList<Action> listePrincipale = null ;
-	public static int seuil = 1;
+	public static int seuil = 3;
 
 	/**Renvoie l'ensemble des actions realisable pour un joueur dans un etat de jeu donne*/
 	public static ArrayList<Action> actionList(HashMap<String, String> map,String player){
@@ -56,9 +56,9 @@ public class AlphaBeta {
 	}
 
 	/**Prise de decision de l'algorithme alpha-beta qui renvoie une action*/
-	public static Action alphaBetaDecision(HashMap<String, String> map){
+	public static Action alphaBetaDecision(HashMap<String, String> map, String player){
 		int profondeur = 0; 
-		int v = maxValue(map, -60, 60, profondeur);
+		int v = maxValue(map, -60, 60, profondeur, player);
 
 		Iterator<Action> it = listePrincipale.iterator();
 		while(it.hasNext()){
@@ -70,22 +70,25 @@ public class AlphaBeta {
 		return null; 
 	}
 	/**Renvoie la valeur max des action possible*/
-	public static int maxValue(HashMap<String, String> map, int alpha, int beta, int profondeur){
+	public static int maxValue(HashMap<String, String> map, int alpha, int beta, int profondeur, String player){
 
 		int profondeurBis = profondeur+1;
 		if (profondeurBis == 1){
-			listePrincipale = actionList(map, "yellow");
+			listePrincipale = actionList(map, player);
 		}
 
 		if (cutOffTest(map, profondeurBis)){
-			return Eval(map);
+			return Eval(map,player);
 		}
 		int v = -60; 
-
-		Iterator<Action> it = actionList(map, "yellow").iterator();
+		
+		
+		Iterator<Action> it = actionList(map, player).iterator();
 		int i = 0;
+		
+		
 		while(it.hasNext()){
-			v = Math.max(v, minValue(Successor(map, it.next()), alpha, beta, profondeurBis));
+			v = Math.max(v, minValue(Successor(map, it.next()), alpha, beta, profondeurBis, player));
 			if (profondeurBis == 1){
 				listePrincipale.get(i).setUtility(v);
 				i++;
@@ -98,16 +101,24 @@ public class AlphaBeta {
 	}
 
 	/**Renvoie la valeur min des actions possibles*/
-	public static int minValue(HashMap<String, String> map, int alpha, int beta, int profondeur){
+	public static int minValue(HashMap<String, String> map, int alpha, int beta, int profondeur, String player){
 		int profondeurBis = profondeur+1;
 
 		if (cutOffTest(map, profondeurBis)){
-			return Eval(map);
+			return Eval(map,player);
 		}
 		int v = +60; 
-		Iterator<Action> it = actionList(map, "green").iterator();
+		
+		String play ="";
+		if(player=="green"){
+			play="yellow";
+		}else{
+			play="green";
+		}
+		
+		Iterator<Action> it = actionList(map, play).iterator();
 		while(it.hasNext()){
-			v = Math.min(v, maxValue(Successor(map, it.next()), alpha, beta, profondeurBis));
+			v = Math.min(v, maxValue(Successor(map, it.next()), alpha, beta, profondeurBis,player));
 			if (v<=alpha) return v;
 			beta = Math.min(beta, v);
 		}
@@ -117,8 +128,12 @@ public class AlphaBeta {
 
 	/**Fonction d'evaluation qui permet d'evaluer l'etat du jeu a un momment donne.
 	 * L'ia etant max, il cherche a maximiser la difference de point qu'il y a entre lui-meme et l'autre joueur.*/
-	public static int Eval(HashMap<String, String> map){
-		return (IA.getColorPoints(map,"yellow").size() - IA.getColorPoints(map, "green").size()); 
+	public static int Eval(HashMap<String, String> map, String player){
+		if(player == "yellow")
+			return (IA.getColorPoints(map,"yellow").size() - IA.getColorPoints(map, "green").size()); 
+		else{
+			return (IA.getColorPoints(map,"green").size() - IA.getColorPoints(map, "yellow").size()); 
+		}
 	}
 
 
