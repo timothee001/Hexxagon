@@ -1,0 +1,135 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+
+/**Algorithme alpha-beta*/
+public class AlphaBeta2 {
+
+	public static ArrayList<Action> listePrincipale = null ;
+	public static int seuil = 1;
+
+	/**Renvoie l'ensemble des actions realisable pour un joueur dans un etat de jeu donne*/
+	public static ArrayList<Action> actionList(HashMap<String, String> map,String player){
+
+		ArrayList<Action> list = new ArrayList<Action>();
+		ArrayList<String> pions=IA.getColorPoints(map, player);
+		ArrayList<String> resultWithClone=new ArrayList<String>();
+		ArrayList<String> resultWithJump=new ArrayList<String>();
+
+		for(int i=0;i<pions.size();i++){
+			if(IA.clonePossibilitiesList(map,pions.get(i)).size()>0){
+				resultWithClone.add(pions.get(i));
+			}
+			if(IA.jumpPossibilitiesList(map,pions.get(i)).size()>0){
+				resultWithJump.add(pions.get(i));
+			}
+		}
+
+		for(int i=0;i<resultWithClone.size();i++){
+			for(int j=0;j<IA.clonePossibilitiesList(map,resultWithClone.get(i)).size();j++){
+				Action a=new Action(resultWithClone.get(i),IA.clonePossibilitiesList(map,resultWithClone.get(i)).get(j),"0");
+				list.add(a);
+			}
+		}
+		for(int i=0;i<resultWithJump.size();i++){
+			for(int j=0;j<IA.jumpPossibilitiesList(map,resultWithJump.get(i)).size();j++){
+				Action a=new Action(resultWithJump.get(i),IA.jumpPossibilitiesList(map,resultWithJump.get(i)).get(j),"1");
+				list.add(a);
+			}
+		}
+		return list ;
+	}
+
+	/**Test final : l'alogorithme renvoie la valeur v dans deux situations. 
+	 * La premiere, c'est lorsque l'on atteint la profondeur choisi. 
+	 * La deuxieme, c'est lorsqu'il n'y a plus de case vide donc d'action possible. */
+	public static Boolean cutOffTest(HashMap<String, String> map, int profondeur){
+		Boolean profondeurAtteinte = false; 	
+
+		if (profondeur>seuil || IA.getColorPoints(map, "purple").size()==0){profondeurAtteinte = true;}
+		return profondeurAtteinte; 		
+	}
+
+	public static HashMap<String, String> Successor(HashMap<String,String> map, Action a) {
+		return IA.simulationRemplissageCopy(map, a.getPosDepart(), a.getPosArrive(), a.getTypeDeplacement());
+	}
+
+	/**Prise de decision de l'algorithme alpha-beta qui renvoie une action*/
+	public static Action alphaBetaDecision(HashMap<String, String> map, String player){
+		int profondeur = 0; 
+		int v = maxValue(map, -60, 60, profondeur, player);
+
+		Iterator<Action> it = listePrincipale.iterator();
+		while(it.hasNext()){
+			Action current = it.next();
+			if (current.getUtility() == v){
+				return current;
+			}
+		}
+		return null; 
+	}
+	/**Renvoie la valeur max des action possible*/
+	public static int maxValue(HashMap<String, String> map, int alpha, int beta, int profondeur, String player){
+
+		int profondeurBis = profondeur+1;
+		if (profondeurBis == 1){
+			listePrincipale = actionList(map, player);
+		}
+
+		if (cutOffTest(map, profondeurBis)){
+			return Eval(map);
+		}
+		int v = -60; 
+
+		Iterator<Action> it = actionList(map, player).iterator();
+		int i = 0;
+		while(it.hasNext()){
+			v = Math.max(v, minValue(Successor(map, it.next()), alpha, beta, profondeurBis, player));
+			if (profondeurBis == 1){
+				listePrincipale.get(i).setUtility(v);
+				i++;
+			}
+			if (v>=beta) return v;
+			alpha = Math.max(alpha, v);
+		}
+		return v;
+
+	}
+
+	/**Renvoie la valeur min des actions possibles*/
+	public static int minValue(HashMap<String, String> map, int alpha, int beta, int profondeur, String player){
+		int profondeurBis = profondeur+1;
+
+		if (cutOffTest(map, profondeurBis)){
+			return Eval(map);
+		}
+		int v = +60; 
+		
+		String play ="";
+		if(player=="green"){
+			play="yellow";
+		}else{
+			play="green";
+		}
+		
+		Iterator<Action> it = actionList(map, play).iterator();
+		while(it.hasNext()){
+			v = Math.min(v, maxValue(Successor(map, it.next()), alpha, beta, profondeurBis,player));
+			if (v<=alpha) return v;
+			beta = Math.min(beta, v);
+		}
+		return v;
+
+	}
+
+	/**Fonction d'evaluation qui permet d'evaluer l'etat du jeu a un momment donne.
+	 * L'ia etant max, il cherche a maximiser la difference de point qu'il y a entre lui-meme et l'autre joueur.*/
+	public static int Eval(HashMap<String, String> map, String player){
+		if(player == "yellow")
+			return (IA.getColorPoints(map,"yellow").size() - IA.getColorPoints(map, "green").size()); 
+		return (IA.getColorPoints(map,"green").size() - IA.getColorPoints(map, "yellow").size()); 
+	}
+
+
+}
