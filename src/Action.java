@@ -11,6 +11,10 @@ public class Action{
 			this.posArrive = posArrive;
 			
 		}
+		
+		public String toString(){
+			return "["+posDepart+","+typeDeplacement+","+posArrive+"]";
+		}
 
 		public String getPosDepart(){
 			return this.posDepart;

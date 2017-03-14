@@ -81,7 +81,7 @@ public class Panel extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
+				AlphaBeta.seuil=3;
 				isAiVSai=false;
 			}
 		});
@@ -112,8 +112,12 @@ public class Panel extends JFrame{
 				iaResult=ia.IAAlphaBeta2(tourJoueurAdv);
 			
 				
-				System.out.println(iaResult);
+				System.out.println(tourJoueurAdv + " turn : " +iaResult);
 				String text=iaResult.get(0);
+				
+				
+				
+				
 				final int xtext=Integer.parseInt(text.substring(0, 2));
 				final int ytext=Integer.parseInt(text.substring(2, 4));
 				String xS=xtext>=0?"+"+xtext:""+xtext;
