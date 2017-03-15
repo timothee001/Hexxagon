@@ -22,7 +22,7 @@ public class Main {
 		Panel pane =new Panel();
 		MCTS mcts = new MCTS(pane);
 		
-		for(int i=0;i<1000;i++){
+		for(int i=0;i<200;i++){
 			Node selected = mcts.selection();
 			//selected.printState();
 			Node expand = mcts.expend(selected);
@@ -41,6 +41,7 @@ public class Main {
 		
 		while(!currentNode.isLeaf()){
 			System.out.println(currentNode);
+			//currentNode.printState();
 			Node nextNode= mcts.root;
 			double maxUCT1soFar = 0.0;
 			for(int i=0;i<currentNode.getChildsCount();i++){

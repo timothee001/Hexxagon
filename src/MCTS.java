@@ -158,8 +158,8 @@ public class MCTS {
 	}
 	
 	public double UCT1Utility(Node node){
-		double utility = ((double)node.getW()/(double)node.getN()) + this.c * Math.sqrt(Math.log(this.c)/(double)node.getN());
-		//System.out.println("UCT1 : " + utility);
+		double utility = ((double)node.getW()/(double)node.getN()) + this.c * (Math.sqrt(Math.log(this.t)/(double)node.getN()));
+		//System.out.println("W : "+(double)node.getW()+ " N : "+(double)node.getN()+" Logt : "+Math.log(this.t)  +" UCT1 : " + utility);
 		return utility;
 	}
 	
