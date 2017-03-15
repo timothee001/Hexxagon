@@ -53,12 +53,14 @@ public class MCTS {
 		}
 		
 		}
-		
+		System.out.println("Selection of this node");
+		System.out.println(currentNode);
 		return currentNode;
 	}
 	
 	public Node expend(Node node){
-		
+		System.out.print("Expension of the node : ");
+		System.out.println(node);
 		String turn;
 		if(node.getTurn()=="yellow"){
 			turn="green";
@@ -69,7 +71,8 @@ public class MCTS {
 			for(int i =0;i<possibleActions.size();i++){
 				Node n = new Node(possibleActions.get(i));
 				node.addChild(n);
-				System.out.println(n);
+				//System.out.println(n);
+				//n.printState();
 			}
 		
 		
@@ -81,7 +84,8 @@ public class MCTS {
 	}
 	
 	
-	public String simulate(HashMap<String,String> originalMap, Node startNode){
+	public String simulate(Node startNode){
+		HashMap<String,String> originalMap = startNode.state;
 		t++;
 		//first move chosen
 		this.AB.seuil=1;
@@ -125,12 +129,12 @@ public class MCTS {
 		
 		
 		String winner = greenPoints>yellowPoints?"green":"yellow";
-		System.out.println("winner : " + winner);
+		System.out.println("winner of the simulation : " + winner);
 		return winner;
 	}
 	
 	public void backPropagate(Node endNode, String winner){
-		
+		System.out.println("backpropagate from " +endNode);
 		Node currentNode=endNode;
 		
 		while(true){
@@ -140,18 +144,21 @@ public class MCTS {
 				currentNode.incrementW();
 			}
 			
-			currentNode=currentNode.getMotherNode();
 			if(currentNode.isRoot){
 				break;
 			}
+			
+			currentNode=currentNode.getMotherNode();
+			
 		}
 		
 		
 	}
 	
 	public double UCT1Utility(Node node){
-		
-		return ((double)node.getW()/(double)node.getN()) + this.c * Math.sqrt(Math.log(this.c)/(double)node.getN());
+		double utility = ((double)node.getW()/(double)node.getN()) + this.c * Math.sqrt(Math.log(this.c)/(double)node.getN());
+		//System.out.println("UCT1 : " + utility);
+		return utility;
 	}
 	
 	public ArrayList<String> PlayABOpponent(){

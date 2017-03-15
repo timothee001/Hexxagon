@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 public class Node {
 
@@ -12,6 +13,7 @@ public class Node {
 	Action a;
 	String turn=null;
 	HashMap<String,String> state; 
+	String uniqueID = UUID.randomUUID().toString().split("-")[0];
 	
 	public Node(String colorTurnRoot){
 		this.turn=colorTurnRoot;
@@ -88,6 +90,11 @@ public class Node {
 	}
 	
 	public void addChild(Node child){
+		if(this.turn=="yellow"){
+			child.turn="green";
+		}else{
+			child.turn="yellow";
+		}
 		this.childs.add(child);
 		child.setMotherNode(this);
 		child.setState(MCTS.simulationRemplissageCopy(this.state, child.a.getPosDepart(), child.a.getPosArrive(), child.a.getTypeDeplacement()));
@@ -112,8 +119,14 @@ public class Node {
 	}
 	
 	public String toString(){
-		return "W : " + this.getW() + " N : "+this.getN()+ " Childs # : "+this.getChildsCount() + " Action : "+this.a;
-	}
+		if(!this.isRoot){
+			return "id : " +this.uniqueID + " MotherId : "+ this.mothernode.uniqueID + " turn : "+this.turn +" W : " + this.getW() + " N : "+this.getN()+ " Childs # : "+this.getChildsCount() + " Action : "+this.a;
+		}else{
+			return "id : " +this.uniqueID + " MotherId : isRoot "+ " turn : "+this.turn +   " W : " + this.getW() + " N : "+this.getN()+ " Childs # : "+this.getChildsCount() + " Action : "+this.a;
+
+		}
+		
+			}
 	
 	
 	
