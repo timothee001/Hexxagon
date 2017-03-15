@@ -6,8 +6,8 @@ public class MCTS {
 	Panel pane;
 	HashMap<String,String> mapSimulation=new HashMap<String,String>();
 	AlphaBeta2 AB;
-	double c=Math.sqrt(2);//the exploration parameter—theoretically equal to √2; in practice usually chosen empirically;
-	int t=0;// stands for the total number of simulations for the node considered. It is equal to the sum of all the ni.
+	static double c=Math.sqrt(2);//the exploration parameter—theoretically equal to √2; in practice usually chosen empirically;
+	static int t=0;// stands for the total number of simulations for the node considered. It is equal to the sum of all the ni.
 	Node root;
 	
 	public MCTS(Panel pane){
@@ -162,8 +162,8 @@ public class MCTS {
 		System.out.println("end backpropagate ");
 	}
 	
-	public double UCT1Utility(Node node){
-		double utility = ((double)node.getW()/(double)node.getN()) + this.c * (Math.sqrt(Math.log(this.t)/(double)node.getN()));
+	public static double UCT1Utility(Node node){
+		double utility = ((double)node.getW()/(double)node.getN()) + MCTS.c * (Math.sqrt(Math.log(MCTS.t)/(double)node.getN()));
 		//.out.println(utility);
 		//System.out.println("W : "+(double)node.getW()+ " N : "+(double)node.getN()+" Logt : "+Math.log(this.t)  +" UCT1 : " + utility);
 		return utility;
