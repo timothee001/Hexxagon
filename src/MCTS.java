@@ -3,6 +3,7 @@ import java.util.HashMap;
 
 public class MCTS {
 
+	boolean debug=false;
 	Panel pane;
 	HashMap<String,String> mapSimulation=new HashMap<String,String>();
 	AlphaBeta2 AB;
@@ -53,14 +54,19 @@ public class MCTS {
 		}
 		
 		}
-		System.out.println("Selection of this node");
-		System.out.println(currentNode);
+		if(debug){
+			System.out.println("Selection of this node");
+			System.out.println(currentNode);
+		}
+		
 		return currentNode;
 	}
 	
 	public Node expend(Node node){
+		if(debug){
 		System.out.print("Expension of the node : ");
 		System.out.println(node);
+		}
 		String turn;
 		if(node.getTurn()=="yellow"){
 			turn="green";
@@ -87,7 +93,9 @@ public class MCTS {
 	
 	
 	public String simulate(Node startNode){
+		if(debug){
 		System.out.println("Start simulation from this node " + startNode);
+		}
 		HashMap<String,String> originalMap = startNode.state;
 		t++;
 		//first move chosen
@@ -134,13 +142,17 @@ public class MCTS {
 		
 		
 		String winner = greenPoints>yellowPoints?"green":"yellow";
+		if(debug){
 		System.out.println("winner of the simulation : " + winner);
+		}
 		return winner;
 	}
 	
 	
 	public void backPropagate(Node endNode, String winner){
+		if(debug){
 		System.out.println("backpropagate from " +endNode);
+		}
 		Node currentNode=endNode;
 		
 		while(true){
@@ -149,17 +161,22 @@ public class MCTS {
 			if(currentNode.getTurn()==winner){
 				currentNode.incrementW();
 			}
+			if(debug){
 			System.out.println(currentNode);
+			}
 			
 			if(currentNode.isRoot){
 				break;
 			}
 			
+			
 			currentNode=currentNode.getMotherNode();
 			
+			
 		}
-		
+		if(debug){
 		System.out.println("end backpropagate ");
+		}
 	}
 	
 	public static double UCT1Utility(Node node){
