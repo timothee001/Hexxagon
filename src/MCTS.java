@@ -15,14 +15,8 @@ public class MCTS {
 		this.pane.setVisible(false);
 		this.mapSimulation.putAll(pane.Map);
 		this.AB= new AlphaBeta2();
-		this.root = new Node("Green");
-//		ArrayList<Action> possibleActions = getAllPossibilities(mapSimulation,"green");
-//		for(int i =0;i<possibleActions.size();i++){
-//			Node n = new Node(this.root,possibleActions.get(i));
-//			this.root.addChild(n);
-//			System.out.println(n);
-//		}
-//		System.out.println(this.root);	
+		this.root = new Node("yellow");
+		this.root.setState(mapSimulation);
 	}
 	
 	
@@ -41,8 +35,9 @@ public class MCTS {
 			for(int i=0;i<childs.size();i++){
 				
 				double bestSoFar =0;
-
-				if(childs.get(i).getN()>0){
+				if(childs.get(i).getN()==0){
+					return childs.get(i);
+				}else if(childs.get(i).getN()>0){
 					childHasStats=true;
 					double utility=UCT1Utility(childs.get(i));
 					if(utility>bestSoFar){
@@ -64,17 +59,25 @@ public class MCTS {
 	
 	public Node expend(Node node){
 		
-		if(node.getTurn()=="green"){
-			
-			
-			
-			
-		}else if(node.getTurn()=="yellow"){
-			
+		String turn;
+		if(node.getTurn()=="yellow"){
+			turn="green";
+		}else{
+			turn="yellow";
 		}
+			ArrayList<Action> possibleActions = getAllPossibilities(mapSimulation,turn);
+			for(int i =0;i<possibleActions.size();i++){
+				Node n = new Node(possibleActions.get(i));
+				node.addChild(n);
+				System.out.println(n);
+			}
 		
 		
-		return new Node("");
+		if(possibleActions.size()>0){
+			return node.getChildAt(0);
+		}else{
+			return null;
+		}
 	}
 	
 	
@@ -94,10 +97,10 @@ public class MCTS {
 		int yellowPoints=0;
 		while(true){
 			 greenPoints=getColorPoints(newSimulation, "green").size();
-			System.out.println("green points : " + greenPoints);
+			//System.out.println("green points : " + greenPoints);
 			
 			 yellowPoints = getColorPoints(newSimulation, "yellow").size();
-			System.out.println("yellow points : " + yellowPoints);
+			//System.out.println("yellow points : " + yellowPoints);
 			
 		String opponent;
 		if(currentTurn=="green"){
@@ -113,7 +116,7 @@ public class MCTS {
 		String destS = aS.getPosArrive();
 		String modeS = aS.getTypeDeplacement();
 		simulationRemplissageNoCopy(newSimulation,pionS,destS,modeS);
-		System.out.println(aS);
+		//System.out.println(aS);
 		
 		if(getAllPossibilities(newSimulation,opponent).size()==0){
 			break;

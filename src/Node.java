@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class Node {
 
@@ -8,17 +10,52 @@ public class Node {
 	Node mothernode=null;
 	ArrayList<Node> childs = new ArrayList<Node>();
 	Action a;
-	String turn;
+	String turn=null;
+	HashMap<String,String> state; 
 	
-	public Node(String turn){
-		this.turn=turn;
+	public Node(String colorTurnRoot){
+		this.turn=colorTurnRoot;
 		this.isRoot=true;
 	}
 	
-	public Node(Node mothernode, String turn, Action a){
+	public void setState(HashMap<String,String> state){
+		this.state=state;
+	}
+	
+	public Node(Action a){
 		this.turn=turn;
-		this.mothernode=mothernode;
 		this.a=a;
+	}
+	
+	public void printState(){
+		
+		HashMap<String,String> prin = new HashMap<String,String> ();
+		prin.put("purple", "");
+		prin.put("black", "");
+		prin.put("yellow", "");
+		prin.put("green", "");
+		
+		for (Entry<String,String> entry : state.entrySet()) {
+			  String key = entry.getKey();
+			  String value = entry.getValue();
+			  //System.out.println(key + " : " + value);
+			  
+			  prin.put(value,prin.get(value) + ", " + key);
+			  
+		}
+		
+		for (Entry<String,String> entry : prin.entrySet()) {
+			String key = entry.getKey();
+			  String value = entry.getValue();
+			  System.out.println(key + " : " + value);
+			
+		}
+	}
+	
+	
+	
+	public boolean isLeaf(){
+		return this.childs.size()>0;
 	}
 	
 	public void setMotherNode(Node node){
@@ -53,6 +90,7 @@ public class Node {
 	public void addChild(Node child){
 		this.childs.add(child);
 		child.setMotherNode(this);
+		child.setState(MCTS.simulationRemplissageCopy(this.state, child.a.getPosDepart(), child.a.getPosArrive(), child.a.getTypeDeplacement()));
 	}
 	
 	
@@ -66,7 +104,7 @@ public class Node {
 	
 	
 	
-	public Node getNodeAt(int i){
+	public Node getChildAt(int i){
 		if(i <this.childs.size()){
 			return this.childs.get(i);
 		}

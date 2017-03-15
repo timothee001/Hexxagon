@@ -21,13 +21,18 @@ public class Main {
 		
 		Panel pane =new Panel();
 		MCTS mcts = new MCTS(pane);
+		mcts.root.printState();
+		Action a = mcts.AB.alphaBetaDecision(mcts.root.state, "green");
+		System.out.println(a);
+		Node n= new Node(a);
+		mcts.root.addChild(n);
+		n.printState();
 		
-		Node node= new Node("green");
-		Action a = mcts.AB.alphaBetaDecision(mcts.mapSimulation, "green");
-		node.a=a;
-		
-		mcts.simulate(mcts.mapSimulation, node);
-		
+//		Node nodeSelected = mcts.selection();
+//		Node startNode = mcts.expend(nodeSelected);
+//		String winner = mcts.simulate(mcts.mapSimulation, startNode);
+//		mcts.backPropagate(startNode, winner);
+//		System.out.println(mcts.root);
 		
 //		System.out.println(mcts.getAllPossibilities(mcts.mapSimulation, "green").toString());
 //		
