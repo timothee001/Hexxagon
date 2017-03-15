@@ -57,7 +57,7 @@ public class Node {
 	
 	
 	public boolean isLeaf(){
-		return this.childs.size()>0;
+		return this.childs.size()==0;
 	}
 	
 	public void setMotherNode(Node node){
@@ -97,7 +97,10 @@ public class Node {
 		}
 		this.childs.add(child);
 		child.setMotherNode(this);
+		
+		//System.out.println("this state : "  + this.uniqueID);this.printState();
 		child.setState(MCTS.simulationRemplissageCopy(this.state, child.a.getPosDepart(), child.a.getPosArrive(), child.a.getTypeDeplacement()));
+		//System.out.println("child state : " + child.uniqueID);child.printState();
 	}
 	
 	

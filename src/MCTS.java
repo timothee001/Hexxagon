@@ -67,7 +67,7 @@ public class MCTS {
 		}else{
 			turn="yellow";
 		}
-			ArrayList<Action> possibleActions = getAllPossibilities(mapSimulation,turn);
+			ArrayList<Action> possibleActions = getAllPossibilities(node.state,turn);
 			for(int i =0;i<possibleActions.size();i++){
 				Node n = new Node(possibleActions.get(i));
 				node.addChild(n);
@@ -85,6 +85,7 @@ public class MCTS {
 	
 	
 	public String simulate(Node startNode){
+		System.out.println("Start simulation from this node " + startNode);
 		HashMap<String,String> originalMap = startNode.state;
 		t++;
 		//first move chosen
@@ -143,6 +144,7 @@ public class MCTS {
 			if(currentNode.getTurn()==winner){
 				currentNode.incrementW();
 			}
+			System.out.println(currentNode);
 			
 			if(currentNode.isRoot){
 				break;
@@ -152,7 +154,7 @@ public class MCTS {
 			
 		}
 		
-		
+		System.out.println("end backpropagate ");
 	}
 	
 	public double UCT1Utility(Node node){

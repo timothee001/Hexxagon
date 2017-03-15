@@ -29,12 +29,34 @@ public class Main {
 			String resultSim = mcts.simulate(expand);
 			mcts.backPropagate(expand, resultSim);
 			
-			System.out.println(mcts.root);
+			//System.out.println(mcts.root);
 		}
 		
-		for(int i=0;i<mcts.root.getChildsCount();i++){
-			System.out.println(mcts.root.getChildAt(i));
+		
+		//derouler le meilleur path
+		System.out.println("derouler");
+		
+		Node currentNode = mcts.root;
+		currentNode.printState();
+		
+		while(!currentNode.isLeaf()){
+			System.out.println(currentNode);
+			Node nextNode= mcts.root;
+			double maxUCT1soFar = 0.0;
+			for(int i=0;i<currentNode.getChildsCount();i++){
+				if(mcts.UCT1Utility(currentNode.getChildAt(i))>maxUCT1soFar){
+					nextNode=currentNode.getChildAt(i);
+				}
+			}
+			
+			currentNode=nextNode;
+			
 		}
+		
+		
+		
+		
+		
 	
 		
 //		Node nodeSelected = mcts.selection();
