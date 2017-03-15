@@ -123,7 +123,8 @@ public class Node {
 	
 	public String toString(){
 		if(!this.isRoot){
-			return "id : " +this.uniqueID + " MotherId : "+ this.mothernode.uniqueID + " turn : "+this.turn +" W : " + this.getW() + " N : "+this.getN()+ " Childs # : "+this.getChildsCount() + " Action : "+this.a;
+			return "id : " +this.uniqueID + " MotherId : "+ this.mothernode.uniqueID + " turn : "+this.turn +" W : " + this.getW() + " N : "+this.getN()+ " Childs # : "+this.getChildsCount() + " Action : "+this.a 
+					+" greenPoints : "+ MCTS.getColorPoints(this.state, "green").size()+" yellowPoints : "+ MCTS.getColorPoints(this.state, "yellow").size();
 		}else{
 			return "id : " +this.uniqueID + " MotherId : isRoot "+ " turn : "+this.turn +   " W : " + this.getW() + " N : "+this.getN()+ " Childs # : "+this.getChildsCount() + " Action : "+this.a;
 

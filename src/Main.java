@@ -22,7 +22,7 @@ public class Main {
 		Panel pane =new Panel();
 		MCTS mcts = new MCTS(pane);
 		
-		for(int i=0;i<200;i++){
+		for(int i=0;i<1000;i++){
 			Node selected = mcts.selection();
 			//selected.printState();
 			Node expand = mcts.expend(selected);

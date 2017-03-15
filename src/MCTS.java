@@ -77,7 +77,9 @@ public class MCTS {
 		
 		
 		if(possibleActions.size()>0){
-			return node.getChildAt(0);
+			int randomNum =  (int)(Math.random() * possibleActions.size()); 
+			
+			return node.getChildAt(randomNum);
 		}else{
 			return null;
 		}
@@ -100,7 +102,9 @@ public class MCTS {
 		
 		int greenPoints=0;
 		int yellowPoints=0;
+		int count=0;
 		while(true){
+			count++;
 			 greenPoints=getColorPoints(newSimulation, "green").size();
 			//System.out.println("green points : " + greenPoints);
 			
@@ -123,7 +127,7 @@ public class MCTS {
 		simulationRemplissageNoCopy(newSimulation,pionS,destS,modeS);
 		//System.out.println(aS);
 		
-		if(getAllPossibilities(newSimulation,opponent).size()==0){
+		if(getAllPossibilities(newSimulation,opponent).size()==0||count>100){
 			break;
 		}
 		}
@@ -133,6 +137,7 @@ public class MCTS {
 		System.out.println("winner of the simulation : " + winner);
 		return winner;
 	}
+	
 	
 	public void backPropagate(Node endNode, String winner){
 		System.out.println("backpropagate from " +endNode);
@@ -159,6 +164,7 @@ public class MCTS {
 	
 	public double UCT1Utility(Node node){
 		double utility = ((double)node.getW()/(double)node.getN()) + this.c * (Math.sqrt(Math.log(this.t)/(double)node.getN()));
+		//.out.println(utility);
 		//System.out.println("W : "+(double)node.getW()+ " N : "+(double)node.getN()+" Logt : "+Math.log(this.t)  +" UCT1 : " + utility);
 		return utility;
 	}
@@ -442,13 +448,19 @@ public class MCTS {
 			ArrayList<String> cloneList = clonePossibilitiesList(Simulation,allColorPoints.get(i));
 			ArrayList<String> jumpList = jumpPossibilitiesList(Simulation,allColorPoints.get(i));
 			
-			for(int j=0;j<cloneList.size();j++){
-				allPossibilities.add(new Action(allColorPoints.get(i),cloneList.get(j),"0"));
-			}
+	
 			
 			for(int k=0;k<jumpList.size();k++){
 				allPossibilities.add(new Action(allColorPoints.get(i),jumpList.get(k),"1"));
 			}
+	
+			
+			
+			for(int j=0;j<cloneList.size();j++){
+				allPossibilities.add(new Action(allColorPoints.get(i),cloneList.get(j),"0"));
+			}
+			
+		
 			
 		}
 		
