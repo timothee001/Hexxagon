@@ -102,7 +102,7 @@ public class Panel extends JFrame{
 					tourJoueurAdv="yellow";
 					
 					MCTS mcts = new MCTS(Panel.this,tourJoueur);
-					mcts.train(1000);
+					mcts.train(100);
 					Action bestAction = mcts.getBestAction();
 					iaResult.add(bestAction.getPosDepart());
 					iaResult.add(bestAction.getTypeDeplacement());

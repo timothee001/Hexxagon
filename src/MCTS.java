@@ -63,7 +63,7 @@ public class MCTS {
 			Node selected = this.selection();
 			//selected.printState();
 			Node expand = this.expend(selected);
-			String resultSim = this.simulate(expand,1,6);
+			String resultSim = this.simulate(expand,1,10);
 			this.backPropagate(expand, resultSim);
 			
 			//System.out.println(mcts.root);
@@ -174,6 +174,12 @@ public class MCTS {
 		
 		int greenPoints=0;
 		int yellowPoints=0;
+		
+		int originalGreenPoints=getColorPoints(originalMap, "green").size();
+			//System.out.println("green points : " + greenPoints);
+			
+		int	 originalYellowPoints = getColorPoints(originalMap, "yellow").size();
+		
 		int count=0;
 		while(true){
 			count++;
@@ -205,7 +211,7 @@ public class MCTS {
 		}
 		
 		
-		String winner = greenPoints>yellowPoints?"green":"yellow";
+		String winner = (greenPoints-originalGreenPoints)>(yellowPoints-originalYellowPoints)?"green":"yellow";
 		if(debug){
 		System.out.println("winner of the simulation : " + winner);
 		}
