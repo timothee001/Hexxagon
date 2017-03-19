@@ -3,7 +3,7 @@ import java.util.HashMap;
 
 public class MCTS {
 
-	boolean debug=false;
+	boolean debug=true;
 	Panel pane;
 	HashMap<String,String> mapSimulation=new HashMap<String,String>();
 	AlphaBeta2 AB;
@@ -11,13 +11,63 @@ public class MCTS {
 	static int t=0;// stands for the total number of simulations for the node considered. It is equal to the sum of all the ni.
 	Node root;
 	
-	public MCTS(Panel pane){
+	public MCTS(Panel pane, String startPlayer){
 		this.pane=pane;
-		this.pane.setVisible(false);
+		//this.pane.setVisible(false);
 		this.mapSimulation.putAll(pane.Map);
 		this.AB= new AlphaBeta2();
-		this.root = new Node("yellow");
+		this.root = new Node(startPlayer);
 		this.root.setState(mapSimulation);
+	}
+	
+	public void getBestPath(){
+
+		//derouler le meilleur path
+		System.out.println("derouler");
+		
+		Node currentNode = this.root;
+		currentNode.printState();
+		
+		while(!currentNode.isLeaf()){
+			System.out.println(currentNode);
+			//currentNode.printState();
+			Node nextNode= this.root;
+			double maxUCT1soFar = 0.0;
+			for(int i=0;i<currentNode.getChildsCount();i++){
+				if(this.UCT1Utility(currentNode.getChildAt(i))>maxUCT1soFar){
+					nextNode=currentNode.getChildAt(i);
+				}
+			}
+			
+			currentNode=nextNode;
+			
+		}
+		
+	}
+	
+	public Action getBestAction(){
+		double maxUCT1soFar = 0.0;
+		Node selectNode= this.root;
+		for(int i=0;i<this.root.getChildsCount();i++){
+			if(this.UCT1Utility(this.root.getChildAt(i))>maxUCT1soFar){
+				selectNode=this.root.getChildAt(i);
+			}
+		}
+		return selectNode.a;
+	}
+	
+	
+	public void train(int numberOfIteration){
+	for(int i=0;i<numberOfIteration;i++){
+			
+			Node selected = this.selection();
+			//selected.printState();
+			Node expand = this.expend(selected);
+			String resultSim = this.simulate(expand,1,6);
+			this.backPropagate(expand, resultSim);
+			
+			//System.out.println(mcts.root);
+		}
 	}
 	
 	
@@ -40,12 +90,26 @@ public class MCTS {
 					return childs.get(i);
 				}else if(childs.get(i).getN()>0){
 					childHasStats=true;
-					double utility=UCT1Utility(childs.get(i));
-					if(utility>bestSoFar){
-						bestSoFar=utility;
-						currentNode = childs.get(i);
-					}
 					
+					Node currentChild = childs.get(i);
+					boolean noSkip=true;
+//							if(currentChild.turn=="yellow"){
+//								 if(MCTS.getAllPossibilities(currentChild.state,"green").size()==0){
+//									 noSkip=false;
+//								 }
+//							}else if(currentChild.turn=="green"){
+//								 if(MCTS.getAllPossibilities(currentChild.state,"yellow").size()==0){
+//									 noSkip=false; 
+//								 }
+//							}
+//					
+							if(noSkip){
+								double utility=UCT1Utility(currentChild);
+								if(utility>bestSoFar){
+									bestSoFar=utility;
+									currentNode = childs.get(i);
+								}
+							}			
 					
 				}
 			}
@@ -92,14 +156,14 @@ public class MCTS {
 	}
 	
 	
-	public String simulate(Node startNode){
+	public String simulate(Node startNode, int seuil, int cutOffSimulation){
 		if(debug){
 		System.out.println("Start simulation from this node " + startNode);
 		}
 		HashMap<String,String> originalMap = startNode.state;
 		t++;
 		//first move chosen
-		this.AB.seuil=1;
+		this.AB.seuil=seuil;
 		Action a = startNode.a;
 		String pion = a.getPosDepart();
 		String dest = a.getPosArrive();
@@ -135,7 +199,7 @@ public class MCTS {
 		simulationRemplissageNoCopy(newSimulation,pionS,destS,modeS);
 		//System.out.println(aS);
 		
-		if(getAllPossibilities(newSimulation,opponent).size()==0||count>100){
+		if(getAllPossibilities(newSimulation,opponent).size()==0||count>cutOffSimulation){
 			break;
 		}
 		}

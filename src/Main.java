@@ -10,7 +10,7 @@ public class Main {
 	 */
 	public static void main(String[] args) throws InterruptedException {
 		// TODO Auto-generated method stub
-		//Panel pane =new Panel();
+		Panel pane =new Panel();
 //		while(pane.getSumScore()<58){
 //			pane.iterateOneClick();
 //			System.out.println(pane.getSumScore());
@@ -19,40 +19,11 @@ public class Main {
 		
 		
 		
-		Panel pane =new Panel();
-		MCTS mcts = new MCTS(pane);
+//		Panel pane =new Panel();
+//		MCTS mcts = new MCTS(pane,"green");
+//		mcts.train(100);
+//		mcts.getBestPath();
 		
-		for(int i=0;i<1000;i++){
-			Node selected = mcts.selection();
-			//selected.printState();
-			Node expand = mcts.expend(selected);
-			String resultSim = mcts.simulate(expand);
-			mcts.backPropagate(expand, resultSim);
-			
-			//System.out.println(mcts.root);
-		}
-		
-		
-		//derouler le meilleur path
-		System.out.println("derouler");
-		
-		Node currentNode = mcts.root;
-		currentNode.printState();
-		
-		while(!currentNode.isLeaf()){
-			System.out.println(currentNode);
-			//currentNode.printState();
-			Node nextNode= mcts.root;
-			double maxUCT1soFar = 0.0;
-			for(int i=0;i<currentNode.getChildsCount();i++){
-				if(mcts.UCT1Utility(currentNode.getChildAt(i))>maxUCT1soFar){
-					nextNode=currentNode.getChildAt(i);
-				}
-			}
-			
-			currentNode=nextNode;
-			
-		}
 		
 		
 		

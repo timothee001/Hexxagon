@@ -57,6 +57,8 @@ public class Node {
 	
 	
 	public boolean isLeaf(){
+
+		
 		return this.childs.size()==0;
 	}
 	

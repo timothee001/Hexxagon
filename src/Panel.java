@@ -91,32 +91,35 @@ public class Panel extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				AlphaBeta.seuil=6;
+				AlphaBeta.seuil=2;
 				isAiVSai=true;
 				IA ia=new IA(Panel.this);
 				
 			
-					
+				ArrayList<String> iaResult = new ArrayList<String>();
 				if(tourJoueur.equals("yellow")){
 					tourJoueur="green";
 					tourJoueurAdv="yellow";
+					
+					MCTS mcts = new MCTS(Panel.this,tourJoueur);
+					mcts.train(1000);
+					Action bestAction = mcts.getBestAction();
+					iaResult.add(bestAction.getPosDepart());
+					iaResult.add(bestAction.getTypeDeplacement());
+					iaResult.add(bestAction.getPosArrive());
+					
+					
 				}else{
 					tourJoueur="yellow";
 					tourJoueurAdv="green";
+			
+					iaResult=ia.IAAlphaBeta2(tourJoueurAdv);
 				}
 				
 				
 				
-				
-				ArrayList<String> iaResult = new ArrayList<String>();
-				iaResult=ia.IAAlphaBeta2(tourJoueurAdv);
-			
-				
 				System.out.println(tourJoueurAdv + " turn : " +iaResult);
 				String text=iaResult.get(0);
-				
-				
-				
 				
 				final int xtext=Integer.parseInt(text.substring(0, 2));
 				final int ytext=Integer.parseInt(text.substring(2, 4));
